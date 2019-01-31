@@ -29,7 +29,8 @@ ARG uid=1000
 ARG gid=1000
 
 ENV HOME /home/${user}
-RUN addgroup -g ${gid} ${group} && addgroup -g 999 docker 
+RUN addgroup -g ${gid} ${group}
+RUN addgroup -g 999 docker
 RUN adduser -h $HOME -u ${uid} -G ${group} -D ${user}
 LABEL Description="This is a base image, which provides the Jenkins agent executable (slave.jar)" Vendor="Jenkins project" Version="3.27"
 
