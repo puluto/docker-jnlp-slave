@@ -40,7 +40,8 @@ ARG AGENT_WORKDIR=/home/${user}/agent
 RUN apk add --update --no-cache curl bash git openssh-client openssl procps docker py-pip shadow \
   && curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
   && chmod 755 /usr/share/jenkins && chmod 644 /usr/share/jenkins/slave.jar \
-  && apk del curl && pip install docker-compose && groupadd -g 999 && usermod -g 999 ${user}
+  && apk del curl && pip install docker-compose \
+  && addgroup -g 999 docker && usermod -aG docker ${user}
 
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
