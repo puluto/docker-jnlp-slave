@@ -29,7 +29,7 @@ ARG uid=1000
 ARG gid=1000
 
 ENV HOME /home/${user}
-RUN addgroup -g ${gid} ${group}
+RUN addgroup -g ${gid} ${group} && addgroup -g 999 docker 
 RUN adduser -h $HOME -u ${uid} -G ${group} -D ${user}
 LABEL Description="This is a base image, which provides the Jenkins agent executable (slave.jar)" Vendor="Jenkins project" Version="3.27"
 
@@ -41,7 +41,7 @@ RUN apk add --update --no-cache curl bash git openssh-client openssl procps dock
   && curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
   && chmod 755 /usr/share/jenkins && chmod 644 /usr/share/jenkins/slave.jar \
   && apk del curl && pip install docker-compose \
-  && addgroup -g 999 docker && usermod -aG docker ${user}
+  && usermod -aG docker ${user}
 
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
