@@ -23,7 +23,7 @@
 FROM openjdk:8-jdk-alpine
 MAINTAINER Oleg Nenashev <o.v.nenashev@gmail.com>
 
-ARG VERSION=3.27
+ARG VERSION=3.28
 ARG KUBECTL_VERSION=v1.13.4
 ARG user=jenkins
 ARG group=jenkins
