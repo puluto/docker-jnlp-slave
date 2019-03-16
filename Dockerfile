@@ -34,6 +34,7 @@ RUN adduser -h $HOME -u ${uid} -G ${group} -D ${user}
 LABEL Description="This is a base image, which provides the Jenkins agent executable (slave.jar)" Vendor="Jenkins project" Version="3.27"
 
 ARG VERSION=3.27
+ARG KUBECTL_VERSION=v1.13.4
 
 ARG AGENT_WORKDIR=/home/${user}/agent
 
@@ -42,6 +43,11 @@ RUN apk add --update --no-cache curl bash git openssh-client openssl procps dock
   && chmod 755 /usr/share/jenkins && chmod 644 /usr/share/jenkins/slave.jar \
   && apk del curl && pip install docker-compose \
   && usermod -aG 999 ${user}
+
+# Install kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl \
+  && mv ./kubectl /usr/local/bin/kubectl \
+  && chmod +x /usr/local/bin/kubectl
 
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
