@@ -24,7 +24,6 @@ FROM openjdk:8-jdk-alpine
 MAINTAINER Oleg Nenashev <o.v.nenashev@gmail.com>
 
 ARG VERSION=3.28
-ARG KUBECTL_VERSION=v1.13.4
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
@@ -37,15 +36,16 @@ LABEL Description="This is a base image, which provides the Jenkins agent execut
 
 ARG AGENT_WORKDIR=/home/${user}/agent
 
-RUN apk add --update --no-cache curl bash git openssh-client openssl procps docker py-pip shadow \
+RUN apk add --update --no-cache curl bash git openssh-client openssl procps \
   && curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
-  && chmod 755 /usr/share/jenkins && chmod 644 /usr/share/jenkins/slave.jar \
-  && curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/slave.jar
+ 
+ARG KUBECTL_VERSION=v1.13.5
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl \
   && mv ./kubectl /usr/local/bin/kubectl \
-  && chmod +x /usr/local/bin/kubectl \
-  && apk del curl && pip install docker-compose \
-  && usermod -aG 999 ${user}
-
+  && chmod +x /usr/local/bin/kubectl
+  
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
 RUN mkdir /home/${user}/.jenkins && mkdir -p ${AGENT_WORKDIR}
